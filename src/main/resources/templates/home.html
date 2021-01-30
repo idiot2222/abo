@@ -1,10 +1,29 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>ABO</title>
+    <div th:replace="/fragments/header.html :: header"></div>
 </head>
 <body>
+<div th:replace="/fragments/nav.html :: nav"></div>
 
+<div class="container">
+    <h1>아마추어 야구 ABO <i class="fas fa-baseball-ball"></i></h1><hr>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">아마추어 야구의 기록 저장</h3>
+        </div>
+        <div class="panel-body">
+            아마추어 야구의 기록들을 저장할 수 있습니다.
+        </div>
+        <div class="panel-heading">
+            <h3 class="panel-title">세분화 된 스탯</h3>
+        </div>
+        <div class="panel-body">
+            프로 야구처럼 세분화된 스탯을 확인할 수 있습니다.
+        </div>
+    </div>
+</div>
+
+<div th:replace="/fragments/footer.html :: footer"></div>
 </body>
 </html>
