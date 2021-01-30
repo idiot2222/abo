@@ -1,12 +1,13 @@
 package me.bogeun.abo.domain;
 
-import org.hibernate.validator.constraints.Length;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 
+@NoArgsConstructor
 @Entity
 public class User {
 
@@ -14,21 +15,18 @@ public class User {
     @GeneratedValue
     private Long id;
 
-    @NotBlank
-    @Length(min = 3, max = 20)
+    @Column(unique = true)
     private String nickname;
 
-    @NotBlank
-    @Length(min = 8, max = 20)
     private String password;
 
-    @NotBlank
-    @Email
+    private String name;
+
+    @Column(unique = true)
     private String email;
 
+    @CreationTimestamp
     private LocalDateTime joinedAt;
-
-    private LocalDateTime birthDate;
 
     private boolean agreeReceiveEmail;
 
@@ -38,6 +36,16 @@ public class User {
 
     @Enumerated(EnumType.STRING)
     private UserRole userRole;
-    @Enumerated(EnumType.STRING)
-    private Gender gender;
+
+    @Builder
+    public User(String nickname, String password, String name, String email, LocalDateTime joinedAt, boolean agreeReceiveEmail, String image, UserRole userRole) {
+        this.nickname = nickname;
+        this.password = password;
+        this.name = name;
+        this.email = email;
+        this.joinedAt = joinedAt;
+        this.agreeReceiveEmail = agreeReceiveEmail;
+        this.image = image;
+        this.userRole = userRole;
+    }
 }
