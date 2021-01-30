@@ -2,8 +2,10 @@ package me.bogeun.abo.controller;
 
 import lombok.RequiredArgsConstructor;
 import me.bogeun.abo.domain.dto.UserJoinForm;
+import me.bogeun.abo.domain.dto.UserLoginForm;
 import me.bogeun.abo.service.UserService;
 import me.bogeun.abo.valid.UserJoinValidator;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -40,5 +42,11 @@ public class UserController {
 
         userService.joinNewUser(userJoinForm);
         return "redirect:/";
+    }
+
+    @GetMapping("/login")
+    public String getLogin(Model model) {
+        model.addAttribute(new UserLoginForm());
+        return "user/login";
     }
 }
