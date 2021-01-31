@@ -40,14 +40,12 @@ public class User {
     private UserRole userRole;
 
     @Builder
-    public User(String nickname, String password, String name, String email, LocalDateTime joinedAt, boolean agreeReceiveEmail, String image, UserRole userRole) {
+    public User(String nickname, String password, String name, String email, LocalDateTime joinedAt, UserRole userRole) {
         this.nickname = nickname;
         this.password = password;
         this.name = name;
         this.email = email;
         this.joinedAt = joinedAt;
-        this.agreeReceiveEmail = agreeReceiveEmail;
-        this.image = image;
         this.userRole = userRole;
     }
 }
