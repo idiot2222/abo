@@ -2,7 +2,6 @@ package me.bogeun.abo.controller;
 
 import me.bogeun.abo.domain.User;
 import me.bogeun.abo.repository.UserRepository;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
