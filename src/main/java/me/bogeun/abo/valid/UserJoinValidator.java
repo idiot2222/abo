@@ -29,7 +29,7 @@ public class UserJoinValidator implements Validator {
             errors.rejectValue("email", "duplicate.email", "이미 가입된 이메일입니다.");
         }
         if (!joinForm.getPassword().equals(joinForm.getPasswordRepeat())) {
-            errors.rejectValue("password", "invalid.password", "비밀번호 확인이 틀렸습니다.");
+            errors.rejectValue("passwordRepeat", "invalid.passwordRepeat", "비밀번호 확인이 틀렸습니다.");
         }
     }
 }

@@ -62,7 +62,7 @@
                         <ul class="dropdown-menu" role="menu">
                             <li sec:authorize="!isAuthenticated()"><a th:href="@{/join}">Join</a></li>
                             <li sec:authorize="isAuthenticated()"><a sec:authentication="name">Username</a></li>
-                            <li sec:authorize="isAuthenticated()"><a th:href="@{/user/myPage}">My Page</a></li>
+                            <li sec:authorize="isAuthenticated()"><a th:href="@{/user/my-page/{nickname}(nickname=${#authentication.name})}">My Page</a></li>
                             <li class="divider"></li>
                             <li sec:authorize="!isAuthenticated()"><a th:href="@{/login}">Log in</a></li>
                             <li sec:authorize="isAuthenticated()">
@@ -76,8 +76,5 @@
             </div>
         </div>
     </nav>
-
-
-
 </div>
 </html>

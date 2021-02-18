@@ -15,4 +15,9 @@ public class HomeController {
     public String getLogin() {
         return "user/login";
     }
+
+    @GetMapping("/error")
+    public String getError() {
+        return "error";
+    }
 }

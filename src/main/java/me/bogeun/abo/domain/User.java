@@ -3,6 +3,7 @@ package me.bogeun.abo.domain;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import me.bogeun.abo.domain.dto.UserUpdateForm;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
@@ -47,5 +48,16 @@ public class User {
         this.email = email;
         this.joinedAt = joinedAt;
         this.userRole = userRole;
+    }
+
+    public void update(UserUpdateForm updateForm) {
+        if(!updateForm.getPassword().equals("")) {
+            this.password = updateForm.getPassword();
+        }
+        if(!updateForm.getEmail().equals("")){
+            this.email = updateForm.getEmail();
+        }
+
+        this.agreeReceiveEmail = updateForm.isAgreeReceiveEmail();
     }
 }

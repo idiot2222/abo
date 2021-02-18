@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <div th:replace="/fragments/header.html :: header"></div>
+    <style>
+        .message {
+            display: inline-block;
+
+            position: absolute;
+            top: 40%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 40px;
+
+            font-size: 40px;
+            text-align: center;
+            background-color: #eaeaea;
+        }
+    </style>
+</head>
+<body>
+<div th:replace="/fragments/nav.html :: nav"></div>
+
+<span class="message">
+    잘못된 접근입니다.
+</span>
+<div th:replace="/fragments/footer.html :: footer"></div>
+</body>
+</html>

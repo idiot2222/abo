@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import me.bogeun.abo.domain.User;
 import me.bogeun.abo.domain.UserRole;
 import me.bogeun.abo.domain.dto.UserJoinForm;
+import me.bogeun.abo.domain.dto.UserUpdateForm;
 import me.bogeun.abo.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -28,5 +29,14 @@ public class UserService {
                 .build();
 
         return userRepository.save(user);
+    }
+
+    public User updateUser(User foundUser, UserUpdateForm updateForm) {
+        if(!updateForm.getPassword().equals("")) {
+            updateForm.setPassword(passwordEncoder.encode(updateForm.getPassword()));
+        }
+
+        foundUser.update(updateForm);
+        return foundUser;
     }
 }

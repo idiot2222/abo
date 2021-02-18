@@ -1,28 +1,32 @@
 package me.bogeun.abo.controller;
 
+import me.bogeun.abo.domain.CurrentUser;
 import me.bogeun.abo.domain.User;
+import me.bogeun.abo.domain.UserRole;
 import me.bogeun.abo.domain.dto.UserJoinForm;
 import me.bogeun.abo.repository.UserRepository;
+import me.bogeun.abo.service.UserDetailService;
 import me.bogeun.abo.service.UserService;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.transaction.annotation.Transactional;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
-import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.unauthenticated;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -33,6 +37,9 @@ class UserControllerTest {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private UserDetailService userDetailService;
 
     @Autowired
     private MockMvc mockMvc;
@@ -79,4 +86,77 @@ class UserControllerTest {
         User user = userRepository.findByNickname("bo");
         assertNull(user);
     }
+
+    @Test
+    @DisplayName("회원 정보 수정 - 성공")
+    @Transactional
+    public void updateUser_correct() throws Exception {
+        UserJoinForm newUser = new UserJoinForm();
+        newUser.setNickname("bogeun");
+        newUser.setPassword("password");
+        newUser.setEmail("bogeun@email.com");
+        User user = userService.joinNewUser(newUser);
+        UserDetails bogeun = userDetailService.loadUserByUsername("bogeun");
+
+        mockMvc.perform(post("/user/my-page/bogeun").with(csrf())
+                    .with(user(bogeun))
+                    .param("password", "password")
+                    .param("passwordRepeat", "password")
+                    .param("email", "bogeun123@email.com"))
+                    .andDo(print())
+                    .andExpect(status().is3xxRedirection())
+                    .andExpect(view().name("redirect:/"));
+
+        assertEquals(user.getEmail(), "bogeun123@email.com");
+    }
+
+    @Test
+    @DisplayName("회원 정보 수정 - 실패(잘못된 입력)")
+    @Transactional
+    public void updateUser_fail_input() throws Exception {
+        UserJoinForm newUser = new UserJoinForm();
+        newUser.setNickname("bogeun");
+        newUser.setPassword("password");
+        newUser.setEmail("bogeun@email.com");
+        userService.joinNewUser(newUser);
+        UserDetails bogeun = userDetailService.loadUserByUsername("bogeun");
+
+        mockMvc.perform(post("/user/my-page/bogeun").with(csrf())
+                    .with(user(bogeun))
+                    .param("password", "password123")
+                    .param("passwordRepeat", "password")
+                    .param("email", "bogeun@email.com"))
+                    .andDo(print())
+                    .andExpect(status().isOk())
+                    .andExpect(view().name("user/my-page"));
+    }
+
+    @Test
+    @DisplayName("회원 정보 수정 - 실패(다른 사용자)")
+    @Transactional
+    public void updateUser_fail_another() throws Exception {
+        UserJoinForm newUser = new UserJoinForm();
+        newUser.setNickname("bogeun");
+        newUser.setPassword("password");
+        newUser.setEmail("bogeun@email.com");
+        userService.joinNewUser(newUser);
+
+        User anotherUser = User.builder()
+                .nickname("bbooggeeuunn")
+                .password("password")
+                .userRole(UserRole.USER)
+                .build();
+        CurrentUser currentUser = new CurrentUser(anotherUser);
+
+        mockMvc.perform(post("/user/my-page/bogeun").with(csrf())
+                    .with(user(currentUser))
+                    .param("password", "password123")
+                    .param("passwordRepeat", "password")
+                    .param("email", "bogeun@email.com"))
+                    .andDo(print())
+                    .andExpect(status().isOk())
+                    .andExpect(view().name("/error"));
+    }
+
+
 }
