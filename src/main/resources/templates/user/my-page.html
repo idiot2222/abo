@@ -12,7 +12,7 @@
             width: 80%;
             margin: 10px 0;
         }
-        .submit {
+        .submit .btn {
             display: inline-block;
             width: 20%;
         }
@@ -67,7 +67,8 @@
                 </div>
             </div>
             <div th:if="${isOwner}" class="submit">
-                <input type="submit" class="btn btn-primary form-control" value="수정"/>
+                <input type="submit" class="btn btn-primary form-control" value="수정" />
+                <a th:href="@{/user/delete/{id}(id=${user.id})}" class="btn btn-danger">탈퇴</a>
             </div>
         </form>
     </div>

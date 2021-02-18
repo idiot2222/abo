@@ -3,12 +3,15 @@ package me.bogeun.abo.controller;
 import lombok.RequiredArgsConstructor;
 import me.bogeun.abo.domain.CurrentUser;
 import me.bogeun.abo.domain.User;
+import me.bogeun.abo.domain.dto.UserDeleteForm;
 import me.bogeun.abo.domain.dto.UserJoinForm;
 import me.bogeun.abo.domain.dto.UserUpdateForm;
 import me.bogeun.abo.repository.UserRepository;
 import me.bogeun.abo.service.UserService;
+import me.bogeun.abo.valid.UserDeleteValidator;
 import me.bogeun.abo.valid.UserJoinValidator;
 import me.bogeun.abo.valid.UserUpdateValidator;
+import org.apache.catalina.session.StandardSession;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,7 +21,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Controller
@@ -28,6 +33,7 @@ public class UserController {
     private final UserService userService;
     private final UserJoinValidator userJoinValidator;
     private final UserUpdateValidator userUpdateValidator;
+    private final UserDeleteValidator userDeleteValidator;
 
     @GetMapping("/join")
     public String getJoin(Model model) {
@@ -71,7 +77,7 @@ public class UserController {
         }
 
         if(foundUser.getId() != currentUser.getUser().getId()) {
-            return "/error";
+            return "error";
         }
 
         model.addAttribute(foundUser);
@@ -83,6 +89,35 @@ public class UserController {
         }
 
         userService.updateUser(foundUser, updateForm);
+        return "redirect:/";
+    }
+
+    @GetMapping("/user/delete/{id}")
+    public String getDelete(@PathVariable Long id, Model model, @AuthenticationPrincipal CurrentUser currentUser) {
+        model.addAttribute(new UserDeleteForm());
+        model.addAttribute(currentUser.getUser());
+
+        return "user/delete";
+    }
+
+    @PostMapping("/user/delete/{id}")
+    public String postDelete(@PathVariable Long id, UserDeleteForm userDeleteForm,
+     BindingResult result, Model model, @AuthenticationPrincipal CurrentUser currentUser, HttpSession httpSession) {
+        Optional<User> foundUser = userRepository.findById(id);
+        if(foundUser.isEmpty() || id != currentUser.getUser().getId()) {
+            return "error";
+        }
+        User user = foundUser.get();
+        model.addAttribute(currentUser.getUser());
+
+        userDeleteValidator.validate(userDeleteForm, result);
+        if(result.hasErrors()) {
+            return "user/delete";
+        }
+
+        userService.deleteUser(user);
+        httpSession.invalidate();
+
         return "redirect:/";
     }
 }

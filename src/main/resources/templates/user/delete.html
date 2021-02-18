@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <div th:replace="/fragments/header.html :: header"></div>
+    <style>
+        .container {
+            padding-left: 25%;
+            padding-right: 25%;
+        }
+    </style>
+</head>
+<body>
+<div th:replace="/fragments/nav.html :: nav"></div>
+
+<div class="contents">
+    <div class="container text-center">
+        <h1>회원 탈퇴</h1><hr>
+        <form th:action="@{/user/delete/{id}(id=${user.id})}" method="post" th:object="${userDeleteForm}">
+            <div class="form-group">
+                <label for="password">비밀 번호</label>
+                <input type="password" id="password" class="form-control" th:field="*{password}"
+                       placeholder="Password" />
+            </div><br>
+            <div class="form-group">
+                <label for="passwordRepeat">비밀 번호 확인</label>
+                <input type="password" id="passwordRepeat" class="form-control" th:field="*{passwordRepeat}"
+                       placeholder="Password Repeat" />
+                <small th:if="${#fields.hasErrors('passwordRepeat')}" th:errors="*{passwordRepeat}"
+                       style="color: orangered"></small>
+            </div><br>
+            <div class="submit">
+                <input type="submit" class="btn btn-danger form-control" value="탈퇴"/>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div th:replace="/fragments/footer.html :: footer"></div>
+</body>
+</html>

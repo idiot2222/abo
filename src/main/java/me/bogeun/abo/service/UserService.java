@@ -39,4 +39,8 @@ public class UserService {
         foundUser.update(updateForm);
         return foundUser;
     }
+
+    public void deleteUser(User user) {
+        userRepository.delete(user);
+    }
 }

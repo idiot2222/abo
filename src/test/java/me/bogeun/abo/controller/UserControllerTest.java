@@ -155,8 +155,57 @@ class UserControllerTest {
                     .param("email", "bogeun@email.com"))
                     .andDo(print())
                     .andExpect(status().isOk())
-                    .andExpect(view().name("/error"));
+                    .andExpect(view().name("error"));
     }
 
+    @Test
+    @DisplayName("회원 탈퇴 - 성공")
+    @Transactional
+    public void deleteUser_success() throws Exception {
+        UserJoinForm newUser = new UserJoinForm();
+        newUser.setNickname("bogeun");
+        newUser.setPassword("password");
+        newUser.setEmail("bogeun@email.com");
+        User user = userService.joinNewUser(newUser);
+        CurrentUser currentUser = new CurrentUser(user);
+        Long id = user.getId();
 
+        mockMvc.perform(post("/user/delete/"+id).with(csrf())
+                .with(user(currentUser))
+                .param("password", "password")
+                .param("passwordRepeat", "password"))
+                .andDo(print())
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/"));
+
+        assertFalse(userRepository.existsByNickname("bogeun"));
+    }
+
+    @Test
+    @DisplayName("회원 탈퇴 - 실패")
+    @Transactional
+    public void deleteUser_fail() throws Exception {
+        UserJoinForm newUser1 = new UserJoinForm();
+        newUser1.setNickname("bogeun1");
+        newUser1.setPassword("password");
+        newUser1.setEmail("bogeun1@email.com");
+        User user1 = userService.joinNewUser(newUser1);
+        UserJoinForm newUser2 = new UserJoinForm();
+        newUser2.setNickname("bogeun2");
+        newUser2.setPassword("password");
+        newUser2.setEmail("bogeun2@email.com");
+        User user2 = userService.joinNewUser(newUser2);
+        CurrentUser currentUser = new CurrentUser(user2);
+        Long id = user1.getId();
+
+        mockMvc.perform(post("/user/delete/"+id).with(csrf())
+                .with(user(currentUser))
+                .param("password", "password")
+                .param("passwordRepeat", "password"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(view().name("error"));
+
+        assertFalse(userRepository.existsByNickname("bogeun"));
+    }
 }
