@@ -11,7 +11,6 @@ import me.bogeun.abo.service.UserService;
 import me.bogeun.abo.valid.UserDeleteValidator;
 import me.bogeun.abo.valid.UserJoinValidator;
 import me.bogeun.abo.valid.UserUpdateValidator;
-import org.apache.catalina.session.StandardSession;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;

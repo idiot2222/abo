@@ -2,18 +2,12 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <div th:replace="/fragments/header.html :: header"></div>
-    <style>
-        .container {
-            padding-left: 25%;
-            padding-right: 25%;
-        }
-    </style>
 </head>
 <body>
 <div th:replace="/fragments/nav.html :: nav"></div>
 
 <div class="contents">
-    <div class="container text-center">
+    <div class="container-small text-center">
         <h1>회원 탈퇴</h1><hr>
         <form th:action="@{/user/delete/{id}(id=${user.id})}" method="post" th:object="${userDeleteForm}">
             <div class="form-group">

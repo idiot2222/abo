@@ -3,10 +3,6 @@
 <head>
     <div th:replace="/fragments/header.html :: header"></div>
     <style>
-        .container {
-            padding-left: 25%;
-            padding-right: 25%;
-        }
         .form-group {
             display: inline-block;
             width: 80%;
@@ -22,7 +18,7 @@
 <div th:replace="/fragments/nav.html :: nav"></div>
 
 <div class="contents">
-    <div class="container text-center">
+    <div class="container-small text-center">
         <h1>회원 정보 및 수정</h1>
         <hr>
         <form action="#" th:action="@{/user/my-page/{nickname}(nickname=${#authentication.name})}" method="post"

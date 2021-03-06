@@ -2,21 +2,14 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <div th:replace="/fragments/header.html :: header"></div>
-    <style>
-        .container {
-            padding-left: 25%;
-            padding-right: 25%;
-        }
-    </style>
 </head>
 <body>
 <div th:replace="/fragments/nav.html :: nav"></div>
 
 <div class="contents">
-    <div class="container text-center">
-        <br><br><br>
+    <div class="container-small text-center">
         <h1>회원 가입</h1><hr>
-        <form action="#" th:action="@{/join}" method="post" th:object="${userJoinForm}">
+        <form th:action="@{/join}" method="post" th:object="${userJoinForm}">
             <div class="form-group">
                 <label for="nickname">아이디</label>
                 <input type="text" id="nickname" class="form-control" th:field="*{nickname}"
@@ -54,7 +47,7 @@
                 </div><br>
                 <div>
                     <input type="submit" class="btn btn-primary form-control" value="로그인" />
-                </div><br><br><br><br>
+                </div>
             </div>
         </form>
     </div>

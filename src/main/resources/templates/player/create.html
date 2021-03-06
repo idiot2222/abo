@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <div th:replace="/fragments/header.html :: header"></div>
+    <style>
+        .form-control {
+            display: inline-block;
+            width: 30%;
+        }
+
+        .input-group {
+            position: relative;
+            left: 50%;
+            transform: translate(-50%, 0);
+            width: 40%;
+        }
+
+        #positionList {
+            display: inline-block;
+            width: 70%;
+            font-size: 25px;
+        }
+
+        .delBtn {
+            float: right;
+        }
+
+        .hide {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<div th:replace="/fragments/nav.html :: nav"></div>
+
+<div class="contents">
+    <div class="container-small text-center">
+        <h1>선수 등록</h1>
+        <hr>
+        <form th:action="@{/player/create}" method="post" th:object="${playerCreateForm}">
+            <div class="form-group">
+                <label for="height">키</label><br>
+                <input type="number" id="height" class="form-control" th:field="*{height}"
+                       oninput="inputNumberLengthLimit(this)"/>cm<br>
+                <small th:if="${#fields.hasErrors('height')}" th:errors="*{height}"
+                       style="color: orangered"></small>
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="weight">몸무게</label><br>
+                <input type="number" id="weight" class="form-control" th:field="*{weight}"
+                       oninput="inputNumberLengthLimit(this)"/>kg<br>
+                <small th:if="${#fields.hasErrors('weight')}" th:errors="*{weight}"
+                       style="color: orangered"></small>
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="playHand">사용하는 손</label><br>
+                <select id="playHand" th:field="*{playHand}" class="form-control">
+                    <option th:each="hand : ${T(me.bogeun.abo.domain.PlayHand).values()}"
+                            th:value="${hand}" th:text="${hand.getKor()}"></option>
+                </select>
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="position">포지션</label><br>
+                <select id="position" th:field="*{position}" class="form-control">
+                    <option th:each="position : ${T(me.bogeun.abo.domain.Position).values()}"
+                            th:value="${position}" th:text="${position.getKor()}"></option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>
+                    <input type="submit" id="submitBtn" class="btn btn-primary" value="등록">
+                </label>
+            </div>
+        </form>
+    </div>
+</div>
+<div th:replace="/fragments/footer.html :: footer"></div>
+<script>
+    function inputNumberLengthLimit(e) {
+        if (e.value.length > 3) {
+            e.value = e.value.slice(0, 3);
+        }
+    }
+</script>
+</body>
+</html>

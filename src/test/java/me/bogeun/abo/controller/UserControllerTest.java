@@ -12,10 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -56,12 +53,13 @@ class UserControllerTest {
     @Test
     @DisplayName("회원 가입 - 정상")
     public void postJoin_correct() throws Exception {
-        mockMvc.perform(post("/join").with(csrf())
-                    .param("nickname", "bogeun123")
-                    .param("password", "password")
-                    .param("passwordRepeat", "password")
-                    .param("email", "email@naver.com")
-                    .param("name", "박보근"))
+        mockMvc.perform(post("/join")
+                        .with(csrf())
+                        .param("nickname", "bogeun123")
+                        .param("password", "password")
+                        .param("passwordRepeat", "password")
+                        .param("email", "email@naver.com")
+                        .param("name", "박보근"))
                     .andDo(print())
                     .andExpect(status().is3xxRedirection())
                     .andExpect(view().name("redirect:/"));
@@ -73,15 +71,16 @@ class UserControllerTest {
     @Test
     @DisplayName("회원 가입 - 실패")
     public void postJoin_fail() throws Exception {
-        mockMvc.perform(post("/join").with(csrf())
+        mockMvc.perform(post("/join")
+                    .with(csrf())
                     .param("nickname", "bo")
                     .param("password", "password")
                     .param("passwordRepeat", "password123")
                     .param("email", "email")
                     .param("name", "박"))
-                    .andDo(print())
-                    .andExpect(status().isOk())
-                    .andExpect(view().name("user/join"));
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(view().name("user/join"));
 
         User user = userRepository.findByNickname("bo");
         assertNull(user);
@@ -98,14 +97,15 @@ class UserControllerTest {
         User user = userService.joinNewUser(newUser);
         UserDetails bogeun = userDetailService.loadUserByUsername("bogeun");
 
-        mockMvc.perform(post("/user/my-page/bogeun").with(csrf())
+        mockMvc.perform(post("/user/my-page/bogeun")
+                    .with(csrf())
                     .with(user(bogeun))
                     .param("password", "password")
                     .param("passwordRepeat", "password")
                     .param("email", "bogeun123@email.com"))
-                    .andDo(print())
-                    .andExpect(status().is3xxRedirection())
-                    .andExpect(view().name("redirect:/"));
+                .andDo(print())
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/"));
 
         assertEquals(user.getEmail(), "bogeun123@email.com");
     }
@@ -121,14 +121,15 @@ class UserControllerTest {
         userService.joinNewUser(newUser);
         UserDetails bogeun = userDetailService.loadUserByUsername("bogeun");
 
-        mockMvc.perform(post("/user/my-page/bogeun").with(csrf())
+        mockMvc.perform(post("/user/my-page/bogeun")
+                    .with(csrf())
                     .with(user(bogeun))
                     .param("password", "password123")
                     .param("passwordRepeat", "password")
                     .param("email", "bogeun@email.com"))
-                    .andDo(print())
-                    .andExpect(status().isOk())
-                    .andExpect(view().name("user/my-page"));
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(view().name("user/my-page"));
     }
 
     @Test
@@ -148,11 +149,12 @@ class UserControllerTest {
                 .build();
         CurrentUser currentUser = new CurrentUser(anotherUser);
 
-        mockMvc.perform(post("/user/my-page/bogeun").with(csrf())
-                    .with(user(currentUser))
-                    .param("password", "password123")
-                    .param("passwordRepeat", "password")
-                    .param("email", "bogeun@email.com"))
+        mockMvc.perform(post("/user/my-page/bogeun")
+                        .with(csrf())
+                        .with(user(currentUser))
+                        .param("password", "password123")
+                        .param("passwordRepeat", "password")
+                        .param("email", "bogeun@email.com"))
                     .andDo(print())
                     .andExpect(status().isOk())
                     .andExpect(view().name("error"));
@@ -170,10 +172,11 @@ class UserControllerTest {
         CurrentUser currentUser = new CurrentUser(user);
         Long id = user.getId();
 
-        mockMvc.perform(post("/user/delete/"+id).with(csrf())
-                .with(user(currentUser))
-                .param("password", "password")
-                .param("passwordRepeat", "password"))
+        mockMvc.perform(post("/user/delete/"+id)
+                    .with(csrf())
+                    .with(user(currentUser))
+                    .param("password", "password")
+                    .param("passwordRepeat", "password"))
                 .andDo(print())
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/"));
@@ -198,10 +201,11 @@ class UserControllerTest {
         CurrentUser currentUser = new CurrentUser(user2);
         Long id = user1.getId();
 
-        mockMvc.perform(post("/user/delete/"+id).with(csrf())
-                .with(user(currentUser))
-                .param("password", "password")
-                .param("passwordRepeat", "password"))
+        mockMvc.perform(post("/user/delete/"+id)
+                    .with(csrf())
+                    .with(user(currentUser))
+                    .param("password", "password")
+                    .param("passwordRepeat", "password"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(view().name("error"));
